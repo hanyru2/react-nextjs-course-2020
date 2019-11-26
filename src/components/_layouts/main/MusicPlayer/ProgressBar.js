@@ -1,14 +1,18 @@
 import React from 'react'
 import { Flex, Box } from '@grid'
 
-ProgressBar.defaultProps = {
-  timeElapsed: '0:00',
-  progress: 0.2,
-  duration: '0:30',
-}
+import { inject } from '@lib/store'
 
-function ProgressBar(props) {
-  const { timeElapsed, progress, duration } = props
+// ProgressBar.defaultProps = {
+//   timeElapsed: '0:00',
+//   progress: 0.2,
+//   duration: '0:30',
+// }
+
+export default inject('playerStore')(ProgressBar)
+
+function ProgressBar({ playerStore }) {
+  const { timeElapsed, progress, duration } = playerStore.progressBar
 
   return (
     <Flex
@@ -73,5 +77,3 @@ function ProgressBar(props) {
     </Flex>
   )
 }
-
-export default ProgressBar

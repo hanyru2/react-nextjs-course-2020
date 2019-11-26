@@ -3,6 +3,7 @@ import { FontAwesomeIcon as Icon } from '@fortawesome/react-fontawesome'
 import Link from '@link'
 import colors from '@features/_ui/colors'
 import { getStatic } from '@lib/static'
+import { useRouter } from 'next/router'
 
 import Account from './Account'
 
@@ -25,6 +26,8 @@ const mainMenus = [
 ]
 
 export default function Navigation() {
+  const { pathname } = useRouter()
+
   return (
     <nav
       css={{
@@ -68,7 +71,12 @@ export default function Navigation() {
                     width: '20px',
                     float: 'left',
                     margin: '-2px 18px 5px 0px',
-                    color: colors.link,
+                    color:
+                      pathname === '/' && menu.route === 'home'
+                        ? '#1ed760'
+                        : `/${menu.route}` === pathname
+                        ? '#1ed760'
+                        : colors.link,
                   }}
                 />
                 {menu.name}

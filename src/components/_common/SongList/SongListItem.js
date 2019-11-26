@@ -4,16 +4,17 @@ import { Flex, Box } from '@grid'
 import colors from '@features/_ui/colors'
 import { convertSecondsToMinutes } from '@features/player/utilities'
 
-import PlayerStore from '@features/player/store'
+import { inject } from '@lib/store'
 
-export default function SongListItem({ track }) {
+export default inject('playerStore')(SongListItem)
+
+function SongListItem({ playerStore, track }) {
   const [hover, setHover] = useState(false)
+  const { id, playing } = playerStore.nowPlaying
 
   if (track.previewUrl === null) {
     return null
   }
-
-  const playerStore = new PlayerStore()
 
   return (
     <Box
@@ -40,11 +41,20 @@ export default function SongListItem({ track }) {
               cursor: 'pointer',
             }}
             onClick={() => {
-              console.log('Play', track)
-              playerStore.play(track)
+              id === track.id && playing
+                ? playerStore.handlePlay(!playing)
+                : playerStore.play(track)
             }}>
             <Icon
-              icon={hover ? 'play' : 'music'}
+              icon={
+                id === track.id
+                  ? playing
+                    ? 'pause'
+                    : 'play'
+                  : hover
+                  ? 'play'
+                  : 'music'
+              }
               css={{
                 color: colors.link,
               }}
@@ -65,7 +75,7 @@ export default function SongListItem({ track }) {
               {track.name}
             </Box>
             <Box width={1} css={{ fontSize: '0.9em', paddingTop: '10px' }}>
-              {track.artist} • {track.album}
+              {track.artist} • {track.albumName}
             </Box>
           </Flex>
         </Box>
@@ -83,7 +93,7 @@ export default function SongListItem({ track }) {
               height: '30px',
               cursor: 'pointer',
             }}
-            onClick={() => {}}>
+            onClick={() => playerStore.handleAddToQueue(track)}>
             <Icon
               icon="plus-circle"
               css={{
@@ -97,7 +107,7 @@ export default function SongListItem({ track }) {
             paddingTop: '5px',
             fontSize: '0.85em',
           }}>
-          {convertSecondsToMinutes(track.durationMs / 1000)}
+          {convertSecondsToMinutes(track.duration / 1000)}
         </Box>
       </Flex>
     </Box>

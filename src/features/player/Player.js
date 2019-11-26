@@ -1,11 +1,13 @@
 import React from 'react'
 import ReactPlayer from 'react-player'
 
-import PlayerStore from '@features/player/store'
+import { inject } from '@lib/store'
 
-function Player() {
-  const playerStore = new PlayerStore()
+export default inject('playerStore')(Player)
+
+function Player({ playerStore }) {
   const { url, playing } = playerStore.nowPlaying
+  const { muted, level } = playerStore.volume
 
   return (
     <ReactPlayer
@@ -13,14 +15,10 @@ function Player() {
       playing={playing}
       url={url}
       progressInterval={50}
-      volume={0.8}
-      muted={false}
-      onProgress={data => console.log('onProgress', data)}
-      onEnded={() => {
-        console.log('onEnded')
-      }}
+      volume={level}
+      muted={muted}
+      onProgress={data => playerStore.handleProgressBar(data)}
+      onEnded={() => playerStore.handlePlay(false)}
     />
   )
 }
-
-export default Player

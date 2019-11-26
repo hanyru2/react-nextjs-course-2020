@@ -4,6 +4,10 @@ import { Flex, Box } from '@grid'
 import colors from '@features/_ui/colors'
 import Link from '@link'
 
+import { inject } from '@lib/store'
+
+export default inject('playerStore')(SoundBar)
+
 function Button({ icon, onClick, forwardedRef }) {
   const css = {
     background: 'transparent',
@@ -33,16 +37,14 @@ const ButtonControl = forwardRef((props, forwardedRef) => {
   return <Button {...props} forwardedRef={forwardedRef} />
 })
 
-SoundBar.defaultProps = {
-  volume: {
-    muted: false,
-    level: 0.8,
-  },
-}
-
 function SoundBar(props) {
-  const { volume } = props
+  const { playerStore } = props
 
+  const { muted, level } = playerStore.volume
+
+  function handleOnClick(e) {
+    console.log(e.target.value)
+  }
   return (
     <Flex justifyContent="flex-end">
       <Box>
@@ -56,8 +58,8 @@ function SoundBar(props) {
           </Box>
           <Box>
             <ButtonControl
-              icon={volume.muted ? 'volume-mute' : 'volume-up'}
-              onClick={() => {}}
+              icon={muted ? 'volume-mute' : 'volume-up'}
+              onClick={() => playerStore.handleMute(!muted)}
             />
           </Box>
           <Box
@@ -84,7 +86,7 @@ function SoundBar(props) {
                     borderRadius: '5px',
                   },
                 }}
-                value={volume.level}
+                value={level}
                 max={1}
               />
               <input
@@ -105,8 +107,8 @@ function SoundBar(props) {
                 min={0}
                 max={1}
                 step="any"
-                value={volume.level}
-                onClick={() => {}}
+                value={level}
+                onClick={handleOnClick}
                 onMouseDown={() => {}}
                 onChange={() => {}}
                 onMouseUp={() => {}}
@@ -118,5 +120,3 @@ function SoundBar(props) {
     </Flex>
   )
 }
-
-export default SoundBar

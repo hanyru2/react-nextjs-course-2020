@@ -24,7 +24,13 @@ export default function ResultRow({ title, data, route }) {
               <article>
                 <Link route={route} params={{ id: item.id }}>
                   <a>
-                    <img src={item.images[0].url} />
+                    <img
+                      src={
+                        typeof item.images[0] !== 'undefined'
+                          ? item.images[0].url
+                          : ''
+                      }
+                    />
                   </a>
                 </Link>
                 <h3

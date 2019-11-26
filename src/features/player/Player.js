@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef, useEffect } from 'react'
 import ReactPlayer from 'react-player'
 
 import { inject } from '@lib/store'
@@ -6,8 +6,14 @@ import { inject } from '@lib/store'
 export default inject('playerStore')(Player)
 
 function Player({ playerStore }) {
-  const { url, playing } = playerStore.nowPlaying
+  const { id, url, playing } = playerStore.nowPlaying
   const { muted, level } = playerStore.volume
+
+  const playerInst = useRef(null)
+
+  useEffect(() => {
+    playerInst.current.seekTo(0)
+  })
 
   return (
     <ReactPlayer
@@ -18,7 +24,8 @@ function Player({ playerStore }) {
       volume={level}
       muted={muted}
       onProgress={data => playerStore.handleProgressBar(data)}
-      onEnded={() => playerStore.handlePlay(false)}
+      onEnded={() => playerStore.handlePlayNext(id, true)}
+      ref={playerInst}
     />
   )
 }

@@ -39,13 +39,33 @@ export default class PlayerStore {
         previewUrl:
           'https://p.scdn.co/mp3-preview/4045a51dbea3faa5d1e21adb8d5ee293f8ac412b?cid=63ad55666b3143818b506639a02b8867',
         duration: 209355,
+        played: false,
       },
     ],
+    repeat: false,
+    shuffle: false,
+  }
+
+  @observable
+  userProfile = {
+    image: '',
+    name: '',
+  }
+
+  @action
+  handleSetProfile(data) {
+    this.userProfile = {
+      image: data.image,
+      name: data.name,
+    }
   }
 
   @action
   play(track) {
     const { id, previewUrl, name, artist, image } = track
+
+    const trackIndex = this.queue.tracks.findIndex(resp => resp.id === id)
+    this.queue.tracks[trackIndex].played = true
 
     this.nowPlaying.id = id
     this.nowPlaying.playing = true
@@ -83,13 +103,90 @@ export default class PlayerStore {
 
   @action
   handleAddToQueue(track) {
+    track.played = false
     this.queue.tracks.push(track)
   }
 
   @action
-  handleRepeat(track) {
-    this.nowPlaying = {}
-
-    this.nowPlaying = track
+  handleClearQueue() {
+    this.queue.tracks = []
   }
+
+  @action
+  handlePlayNext(id, auto = false) {
+    if (this.queue.shuffle) {
+      if (this.queue.tracks.length > 1) {
+        let shuffles = shuffleTracks(this.queue.tracks)
+        shuffles = shuffles.filter(function(item) {
+          return item.played === false
+        })
+
+        if (shuffles.length === 0) {
+          shuffles = this.queue.tracks.map(function(track) {
+            track.played = false
+            return track
+          })
+        }
+
+        if (shuffles[0].id === id) {
+          this.play(shuffles[1])
+        } else {
+          this.play(shuffles[0])
+        }
+      } else {
+        if (this.queue.repeat) {
+          this.play(this.queue.tracks[0])
+        } else {
+          if (auto) {
+            this.handlePlay(false)
+          }
+        }
+      }
+    } else {
+      const trackIndex = this.queue.tracks.findIndex(resp => resp.id === id)
+      if (trackIndex + 1 < this.queue.tracks.length) {
+        this.play(this.queue.tracks[trackIndex + 1])
+      } else {
+        if (this.queue.repeat) {
+          this.play(this.queue.tracks[0])
+        } else {
+          if (auto) {
+            this.handlePlay(false)
+          }
+
+          this.queue.tracks.map(function(track) {
+            track.played = false
+            return track
+          })
+        }
+      }
+    }
+  }
+
+  @action
+  handlePlayPrev(id) {
+    const trackIndex = this.queue.tracks.findIndex(resp => resp.id === id)
+    if (trackIndex - 1 >= 0) {
+      this.play(this.queue.tracks[trackIndex - 1])
+    } else {
+    }
+  }
+
+  @action
+  handleRepeat() {
+    this.queue.repeat = !this.queue.repeat
+  }
+
+  @action
+  handleShuffle() {
+    this.queue.shuffle = !this.queue.shuffle
+  }
+}
+
+function shuffleTracks(a) {
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[a[i], a[j]] = [a[j], a[i]]
+  }
+  return a
 }

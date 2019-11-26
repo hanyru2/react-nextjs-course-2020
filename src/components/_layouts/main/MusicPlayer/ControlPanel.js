@@ -34,15 +34,23 @@ function ButtonControl({ icon, circle = false, active = false, onClick }) {
 }
 
 function ControlPanel({ playerStore }) {
-  const { playing } = playerStore.nowPlaying
-  const repeat = playerStore.nowPlaying
+  const { id, playing } = playerStore.nowPlaying
+  const { shuffle, repeat } = playerStore.queue
+
   return (
     <Flex>
       <Box>
-        <ButtonControl icon="random" active={false} onClick={() => {}} />
+        <ButtonControl
+          icon="random"
+          active={shuffle}
+          onClick={() => playerStore.handleShuffle()}
+        />
       </Box>
       <Box>
-        <ButtonControl icon="step-backward" onClick={() => {}} />
+        <ButtonControl
+          icon="step-backward"
+          onClick={() => playerStore.handlePlayPrev(id)}
+        />
       </Box>
       <Box>
         <ButtonControl
@@ -52,14 +60,17 @@ function ControlPanel({ playerStore }) {
         />
       </Box>
       <Box>
-        <ButtonControl icon="step-forward" onClick={() => {}} />
+        <ButtonControl
+          icon="step-forward"
+          onClick={() => playerStore.handlePlayNext(id, false)}
+        />
       </Box>
       <Box>
         <ButtonControl
           icon="redo-alt"
-          active={false}
+          active={repeat}
           onClick={() => {
-            playerStore.handleRepeat(repeat)
+            playerStore.handleRepeat()
           }}
         />
       </Box>

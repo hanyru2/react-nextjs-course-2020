@@ -1,13 +1,6 @@
 import React from 'react'
 import { Flex, Box } from '@grid'
-
 import { inject } from '@lib/store'
-
-// ProgressBar.defaultProps = {
-//   timeElapsed: '0:00',
-//   progress: 0.2,
-//   duration: '0:30',
-// }
 
 export default inject('playerStore')(ProgressBar)
 
@@ -66,7 +59,9 @@ function ProgressBar({ playerStore }) {
             max={1}
             step="any"
             value={progress}
-            onClick={() => {}}
+            onClick={e => {
+              playerStore.handleProgressBar(progress)
+            }}
             onMouseDown={() => {}}
             onChange={() => {}}
             onMouseUp={() => {}}

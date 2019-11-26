@@ -4,6 +4,7 @@ import { Flex, Box } from '@grid'
 import { useMember } from '@lib/auth'
 import withPage from '@lib/page/withPage'
 import SearchResults from './SearchResults'
+import { Router } from '@router'
 
 import { Fetch, IfInview } from '@lib/api'
 
@@ -38,6 +39,7 @@ function SearchPage() {
 
   function handleOnChange(e) {
     setKeyword(e.target.value)
+    Router.pushRoute('search', { keyword: e.target.value })
   }
 
   return (

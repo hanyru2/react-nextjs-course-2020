@@ -25,7 +25,9 @@ export function getPlaylistById(id, { token }) {
       image,
       subTitle,
       bottomLine,
-      tracks,
+      tracks: tracks.filter(function(track) {
+        return track.previewUrl !== null
+      }),
     }
   })
 }

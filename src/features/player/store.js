@@ -1,4 +1,4 @@
-import { observable, action } from 'mobx'
+import { observable, action, toJS } from 'mobx'
 import { convertSecondsToMinutes } from '@features/player/utilities'
 
 export default class PlayerStore {
@@ -48,19 +48,10 @@ export default class PlayerStore {
     shuffle: false,
   }
 
-  @observable
-  userProfile = {
-    image: '',
-    name: '',
-  }
-
-  @action
-  handleSetProfile(data) {
-    this.userProfile = {
-      image: data.image,
-      name: data.name,
-    }
-  }
+  /* constructor(RootStore) {
+    this.RootStore = RootStore
+    console.log('profile ', toJS(this.RootStore.profileStore.userProfile))
+  } */
 
   @action
   play(track) {

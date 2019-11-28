@@ -4,50 +4,25 @@ import Link from '@link'
 // import { getStatic } from '@lib/static'
 import colors from '@features/_ui/colors'
 import { useMember } from '@lib/auth'
-import { Fetch, IfInview } from '@lib/api'
-import * as ProfileService from '@features/profile/services'
 
 import { inject } from '@lib/store'
 
-export default inject('playerStore')(Account)
+export default inject()(Account)
 
-function Account({ playerStore }) {
+function Account({ RootStore }) {
   const { token } = useMember()
-  const { image, name } = playerStore.userProfile
-  const profile = {
-    image,
-    name,
-  }
-  return (
-    <Fragment>
-      {image === '' && name === '' ? (
-        <IfInview>
-          <Fetch
-            service={() =>
-              ProfileService.getProfile({
-                token,
-              })
-            }>
-            {({ data }) => (
-              <ProfileData
-                data={data}
-                hasProfile={false}
-                playerStore={playerStore}
-              />
-            )}
-          </Fetch>
-        </IfInview>
-      ) : (
-        <ProfileData data={profile} hasProfile={true} />
-      )}
-    </Fragment>
-  )
-}
+  const { profileStore, playerStore } = RootStore
 
-function ProfileData({ data, hasProfile, playerStore }) {
-  if (!hasProfile) {
-    playerStore.handleSetProfile(data)
+  if (token !== null && profileStore.userProfile.name === '') {
+    profileStore.fetchUserProfile({ token })
   }
+
+  if (token === null || profileStore.userProfile.name === null) {
+    return null
+  }
+
+  const { image, name } = profileStore.userProfile
+
   return (
     <div
       css={{
@@ -72,8 +47,8 @@ function ProfileData({ data, hasProfile, playerStore }) {
           <Link route="account">
             <a>
               <img
-                src={data.image}
-                alt={data.name}
+                src={image}
+                alt={name}
                 css={{
                   width: '30px',
                   height: '30px',
@@ -85,7 +60,7 @@ function ProfileData({ data, hasProfile, playerStore }) {
         </Box>
         <Box>
           <Link route="account">
-            <a>{data.name}</a>
+            <a>{name}</a>
           </Link>
         </Box>
       </Flex>

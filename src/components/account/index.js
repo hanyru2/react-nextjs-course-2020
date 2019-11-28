@@ -1,34 +1,29 @@
 import React from 'react'
-
+import { flowRight as compose } from 'lodash'
 import withPage from '@lib/page/withPage'
 import { useMember } from '@lib/auth'
 import { signOut } from '@features/_auth'
-import { Fetch, IfInview } from '@lib/api'
 
-import * as ProfileService from '@features/profile/services'
+import { inject } from '@lib/store'
 
-function AccountPage() {
-  const { profile, isAuthenticated, token } = useMember()
+function AccountPage({ profileStore }) {
+  const { isAuthenticated } = useMember()
 
   if (!isAuthenticated) {
     return null
   }
 
+  const { name } = profileStore.userProfile
+
   return (
-    <IfInview>
-      <Fetch service={() => ProfileService.getProfile({ token })}>
-        {({ data }) => {
-          const { name } = data
-          return (
-            <div>
-              <p>Current User: {name}</p>
-              <button onClick={() => signOut()}>Log out</button>
-            </div>
-          )
-        }}
-      </Fetch>
-    </IfInview>
+    <div>
+      <p>Current User: {name}</p>
+      <button onClick={() => signOut()}>Log out</button>
+    </div>
   )
 }
 
-export default withPage({ restricted: true })(AccountPage)
+export default compose(
+  withPage({ restricted: true }),
+  inject('profileStore'),
+)(AccountPage)

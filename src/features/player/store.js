@@ -15,9 +15,10 @@ export default class PlayerStore {
   }
 
   @observable
-  volume = {
+  musicVolume = {
     muted: false,
     level: 0.5,
+    unmutedLevel: 0.5,
   }
 
   @observable
@@ -67,7 +68,6 @@ export default class PlayerStore {
 
     const trackIndex = this.queue.tracks.findIndex(resp => resp.id === id)
     this.queue.tracks[trackIndex].played = true
-
     this.nowPlaying.id = id
     this.nowPlaying.playing = true
     this.nowPlaying.title = name
@@ -85,9 +85,26 @@ export default class PlayerStore {
 
   @action
   handleMute(status) {
-    this.volume.muted = status
+    this.musicVolume.muted = status
+
+    if (status) {
+      this.musicVolume.level = 0
+    } else {
+      this.musicVolume.level = this.musicVolume.unmutedLevel
+    }
   }
 
+  @action
+  handleChangeVolume(sound) {
+    this.musicVolume.level = parseFloat(sound)
+    this.musicVolume.unmutedLevel = parseFloat(sound)
+
+    if (sound === '0') {
+      this.musicVolume.muted = true
+    } else {
+      this.musicVolume.muted = false
+    }
+  }
   @action
   handleProgressBar(progress) {
     this.progressBar = {

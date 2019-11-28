@@ -40,11 +40,8 @@ const ButtonControl = forwardRef((props, forwardedRef) => {
 function SoundBar(props) {
   const { playerStore } = props
 
-  const { muted, level } = playerStore.volume
+  const { muted, level } = playerStore.musicVolume
 
-  function handleOnClick(e) {
-    console.log(e.target.value)
-  }
   return (
     <Flex justifyContent="flex-end">
       <Box>
@@ -108,10 +105,7 @@ function SoundBar(props) {
                 max={1}
                 step="any"
                 value={level}
-                onClick={handleOnClick}
-                onMouseDown={() => {}}
-                onChange={() => {}}
-                onMouseUp={() => {}}
+                onChange={e => playerStore.handleChangeVolume(e.target.value)}
               />
             </div>
           </Box>

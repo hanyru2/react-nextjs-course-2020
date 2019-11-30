@@ -6,9 +6,10 @@ import { convertSecondsToMinutes } from '@features/player/utilities'
 
 import { inject } from '@lib/store'
 
-export default inject('playerStore')(SongListItem)
+export default inject()(SongListItem)
 
-function SongListItem({ playerStore, track, inQueue }) {
+function SongListItem({ RootStore, track, inQueue }) {
+  const { playerStore, queueStore } = RootStore
   const [hover, setHover] = useState(false)
   const { id, playing } = playerStore.nowPlaying
 
@@ -18,8 +19,8 @@ function SongListItem({ playerStore, track, inQueue }) {
 
   function checkInQueue(inQueue) {
     if (!inQueue) {
-      playerStore.handleClearQueue()
-      playerStore.handleAddToQueue(track)
+      queueStore.handleClearQueue()
+      queueStore.handleAddToQueue(track)
     }
 
     if (id === track.id && playing) {
@@ -100,7 +101,7 @@ function SongListItem({ playerStore, track, inQueue }) {
               height: '30px',
               cursor: 'pointer',
             }}
-            onClick={() => playerStore.handleAddToQueue(track)}>
+            onClick={() => queueStore.handleAddToQueue(track)}>
             <Icon
               icon="plus-circle"
               css={{

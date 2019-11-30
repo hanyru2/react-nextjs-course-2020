@@ -2,10 +2,10 @@ import React from 'react'
 import { Flex, Box } from '@grid'
 import { inject } from '@lib/store'
 
-export default inject('playerStore')(ProgressBar)
+export default inject('progressStore')(ProgressBar)
 
-function ProgressBar({ playerStore }) {
-  const { timeElapsed, progress, duration } = playerStore.progressBar
+function ProgressBar({ progressStore }) {
+  const { timeElapsed, progress, duration } = progressStore.progressBar
 
   return (
     <Flex
@@ -59,9 +59,9 @@ function ProgressBar({ playerStore }) {
             max={1}
             step="any"
             value={progress}
-            onMouseDown={() => playerStore.handleSeekMouseDown()}
-            onChange={e => playerStore.handleSeekChange(e.target.value)}
-            onMouseUp={e => playerStore.handleSeekMouseUp(e.target.value)}
+            onMouseDown={() => progressStore.handleSeekMouseDown()}
+            onChange={e => progressStore.handleSeekChange(e.target.value)}
+            onMouseUp={e => progressStore.handleSeekMouseUp(e.target.value)}
           />
         </div>
       </Box>

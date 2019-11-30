@@ -3,12 +3,13 @@ import ReactPlayer from 'react-player'
 
 import { inject } from '@lib/store'
 
-export default inject('playerStore')(Player)
+export default inject()(Player)
 
-function Player({ playerStore }) {
+function Player({ RootStore }) {
+  const { playerStore, volumeStore, progressStore } = RootStore
   const { id, url, playing } = playerStore.nowPlaying
-  const { muted, level } = playerStore.musicVolume
-  const { number } = playerStore.seekTo
+  const { muted, level } = volumeStore.musicVolume
+  const { number } = progressStore.seekTo
 
   const playerInst = useRef(null)
 
@@ -24,7 +25,7 @@ function Player({ playerStore }) {
       progressInterval={50}
       volume={level}
       muted={muted}
-      onProgress={data => playerStore.handleProgressBar(data)}
+      onProgress={data => progressStore.handleProgressBar(data)}
       onEnded={() => playerStore.handlePlayNext(id, true)}
       ref={playerInst}
     />

@@ -6,7 +6,7 @@ import Link from '@link'
 
 import { inject } from '@lib/store'
 
-export default inject('playerStore')(SoundBar)
+export default inject('volumeStore')(SoundBar)
 
 function Button({ icon, onClick, forwardedRef }) {
   const css = {
@@ -37,10 +37,8 @@ const ButtonControl = forwardRef((props, forwardedRef) => {
   return <Button {...props} forwardedRef={forwardedRef} />
 })
 
-function SoundBar(props) {
-  const { playerStore } = props
-
-  const { muted, level } = playerStore.musicVolume
+function SoundBar({ volumeStore }) {
+  const { muted, level } = volumeStore.musicVolume
 
   return (
     <Flex justifyContent="flex-end">
@@ -56,7 +54,7 @@ function SoundBar(props) {
           <Box>
             <ButtonControl
               icon={muted ? 'volume-mute' : 'volume-up'}
-              onClick={() => playerStore.handleMute(!muted)}
+              onClick={() => volumeStore.handleMute(!muted)}
             />
           </Box>
           <Box
@@ -105,7 +103,7 @@ function SoundBar(props) {
                 max={1}
                 step="any"
                 value={level}
-                onChange={e => playerStore.handleChangeVolume(e.target.value)}
+                onChange={e => volumeStore.handleChangeVolume(e.target.value)}
               />
             </div>
           </Box>

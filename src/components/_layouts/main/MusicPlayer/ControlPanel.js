@@ -5,7 +5,7 @@ import colors from '@features/_ui/colors'
 
 import { inject } from '@lib/store'
 
-export default inject('playerStore')(ControlPanel)
+export default inject()(ControlPanel)
 
 function ButtonControl({ icon, circle = false, active = false, onClick }) {
   const css = {
@@ -33,9 +33,10 @@ function ButtonControl({ icon, circle = false, active = false, onClick }) {
   )
 }
 
-function ControlPanel({ playerStore }) {
+function ControlPanel({ RootStore }) {
+  const { playerStore, queueStore } = RootStore
   const { id, playing } = playerStore.nowPlaying
-  const { shuffle, repeat } = playerStore.queue
+  const { shuffle, repeat } = queueStore.queue
 
   return (
     <Flex>

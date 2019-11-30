@@ -5,14 +5,15 @@ import colors from '@features/_ui/colors'
 
 import { inject } from '@lib/store'
 
-export default inject('playerStore')(DetailPageHeader)
+export default inject()(DetailPageHeader)
 
-function DetailPageHeader({ data, playerStore }) {
+function DetailPageHeader({ data, RootStore }) {
+  const { playerStore, queueStore } = RootStore
   const { tracks } = data
   function playSongList() {
-    playerStore.handleClearQueue()
+    queueStore.handleClearQueue()
     tracks.map(function(track) {
-      playerStore.handleAddToQueue(track)
+      queueStore.handleAddToQueue(track)
     })
 
     playerStore.play(tracks[0])

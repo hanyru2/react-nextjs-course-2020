@@ -9,10 +9,10 @@ import SongList from '@common/SongList'
 
 import { inject } from '@lib/store'
 
-function QueuePage({ playerStore }) {
+function QueuePage({ queueStore }) {
   const { token } = useMember()
 
-  const { tracks } = playerStore.queue
+  const { tracks } = queueStore.queue
 
   if (token === null) {
     return null
@@ -39,5 +39,5 @@ function QueuePage({ playerStore }) {
 
 export default compose(
   withPage({ restricted: true }),
-  inject('playerStore'),
+  inject('queueStore'),
 )(QueuePage)

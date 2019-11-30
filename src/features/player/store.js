@@ -48,6 +48,12 @@ export default class PlayerStore {
     shuffle: false,
   }
 
+  @observable
+  seekTo = {
+    number: 0,
+    status: false,
+  }
+
   /* constructor(RootStore) {
     this.RootStore = RootStore
     console.log('profile ', toJS(this.RootStore.profileStore.userProfile))
@@ -98,16 +104,28 @@ export default class PlayerStore {
   }
   @action
   handleProgressBar(progress) {
-    this.progressBar = {
-      timeElapsed: convertSecondsToMinutes(progress.playedSeconds),
-      progress: progress.played,
-      duration: convertSecondsToMinutes(progress.loadedSeconds),
+    if (!this.seekTo.status) {
+      this.progressBar = {
+        timeElapsed: convertSecondsToMinutes(progress.playedSeconds),
+        progress: progress.played,
+        duration: convertSecondsToMinutes(progress.loadedSeconds),
+      }
     }
   }
 
   @action
-  handleProgressClick(progress) {
-    console.log(progress)
+  handleSeekChange(value) {
+    this.progressBar.progress = parseFloat(value)
+  }
+
+  @action
+  handleSeekMouseUp(value) {
+    this.seekTo.status = false
+    this.seekTo.number = parseFloat(value)
+  }
+  @action
+  handleSeekMouseDown() {
+    this.seekTo.status = true
   }
 
   @action

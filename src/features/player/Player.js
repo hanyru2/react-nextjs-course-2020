@@ -8,12 +8,13 @@ export default inject('playerStore')(Player)
 function Player({ playerStore }) {
   const { id, url, playing } = playerStore.nowPlaying
   const { muted, level } = playerStore.musicVolume
+  const { number } = playerStore.seekTo
 
-  // const playerInst = useRef(null)
+  const playerInst = useRef(null)
 
-  // useEffect(() => {
-  //   playerInst.current.seekTo(0)
-  // })
+  useEffect(() => {
+    playerInst.current.seekTo(number)
+  }, [number])
 
   return (
     <ReactPlayer
@@ -25,7 +26,7 @@ function Player({ playerStore }) {
       muted={muted}
       onProgress={data => playerStore.handleProgressBar(data)}
       onEnded={() => playerStore.handlePlayNext(id, true)}
-      // ref={playerInst}
+      ref={playerInst}
     />
   )
 }

@@ -59,12 +59,9 @@ function ProgressBar({ playerStore }) {
             max={1}
             step="any"
             value={progress}
-            onClick={e => {
-              playerStore.handleProgressBar(progress)
-            }}
-            onMouseDown={() => {}}
-            onChange={() => {}}
-            onMouseUp={() => {}}
+            onMouseDown={() => playerStore.handleSeekMouseDown()}
+            onChange={e => playerStore.handleSeekChange(e.target.value)}
+            onMouseUp={e => playerStore.handleSeekMouseUp(e.target.value)}
           />
         </div>
       </Box>

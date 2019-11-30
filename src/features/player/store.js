@@ -65,13 +65,13 @@ export default class PlayerStore {
           this.play(shuffles[0])
         }
       } else {
-        if (this.RootStore.queueStore.queue.repeat) {
-          this.RootStore.progressStore.seekTo.number = 0
-        } else {
+        if (!this.RootStore.queueStore.queue.repeat) {
           if (auto) {
             this.handlePlay(false)
           }
         }
+
+        this.RootStore.progressStore.seekTo.number = 0
       }
     } else {
       const trackIndex = this.RootStore.queueStore.queue.tracks.findIndex(
@@ -80,9 +80,7 @@ export default class PlayerStore {
       if (trackIndex + 1 < this.RootStore.queueStore.queue.tracks.length) {
         this.play(this.RootStore.queueStore.queue.tracks[trackIndex + 1])
       } else {
-        if (this.RootStore.queueStore.queue.repeat) {
-          this.RootStore.progressStore.seekTo.number = 0
-        } else {
+        if (!this.RootStore.queueStore.queue.repeat) {
           if (auto) {
             this.handlePlay(false)
           }
@@ -92,6 +90,8 @@ export default class PlayerStore {
             return track
           })
         }
+
+        this.RootStore.progressStore.seekTo.number = 0
       }
     }
   }

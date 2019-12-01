@@ -4,6 +4,7 @@ import { shuffleArray } from '@features/player/utilities'
 export default class PlayerStore {
   @observable
   nowPlaying = {
+    trackId: 0,
     id: '7b8YOVV5quZcSKEijDgyWB',
     playing: false,
     title: 'DDU-DU DDU-DU',
@@ -21,17 +22,20 @@ export default class PlayerStore {
 
   @action
   play(track) {
-    const { id, previewUrl, name, artist, image } = track
-    const trackIndex = this.RootStore.queueStore.queue.tracks.findIndex(
-      resp => resp.id === id,
+    const { trackId, id, previewUrl, name, artist, image } = track
+
+    const trackIndex = this.RootStore.queueStore.shuffleQueue.tracks.findIndex(
+      resp => resp.trackId === trackId,
     )
-    this.RootStore.queueStore.queue.tracks[trackIndex].played = true
+    this.RootStore.queueStore.shuffleQueue.tracks[trackIndex].played = true
+
+    this.nowPlaying.trackId = trackId
     this.nowPlaying.id = id
     this.nowPlaying.playing = true
     this.nowPlaying.title = name
     this.nowPlaying.subTitle = artist
     this.nowPlaying.image = image
-    this.nowPlaying.url = previewUrl
+    this.nowPlaying.url = previewUrl + '#' + Math.random()
 
     console.log('Now Playing:', this.nowPlaying.title)
   }
@@ -42,70 +46,71 @@ export default class PlayerStore {
   }
 
   @action
-  handlePlayNext(id, auto = false) {
-    if (this.RootStore.queueStore.queue.shuffle) {
-      if (this.RootStore.queueStore.queue.tracks.length > 1) {
-        let shuffles = shuffleArray(this.RootStore.queueStore.queue.tracks)
-        shuffles = shuffles.filter(function(item) {
-          return item.played === false
-        })
-
-        if (shuffles.length === 0) {
-          shuffles = this.RootStore.queueStore.queue.tracks.map(function(
-            track,
-          ) {
+  handlePlayNext(trackId, auto = false) {
+    if (this.RootStore.queueStore.shuffleQueue.tracks.length > 1) {
+      const trackIndex = this.RootStore.queueStore.shuffleQueue.tracks.findIndex(
+        resp => resp.trackId === trackId,
+      )
+      if (
+        trackIndex + 1 <
+        this.RootStore.queueStore.shuffleQueue.tracks.length
+      ) {
+        this.play(this.RootStore.queueStore.shuffleQueue.tracks[trackIndex + 1])
+      } else {
+        if (this.RootStore.queueStore.queue.repeat) {
+          this.RootStore.queueStore.shuffleQueue.tracks.map(function(track) {
             track.played = false
             return track
           })
-        }
-
-        if (shuffles[0].id === id) {
-          this.play(shuffles[1])
+          this.play(this.RootStore.queueStore.shuffleQueue.tracks[0])
         } else {
-          this.play(shuffles[0])
-        }
-      } else {
-        if (!this.RootStore.queueStore.queue.repeat) {
           if (auto) {
             this.handlePlay(false)
           }
         }
-
-        this.RootStore.progressStore.seekTo.number = 0
       }
     } else {
-      const trackIndex = this.RootStore.queueStore.queue.tracks.findIndex(
-        resp => resp.id === id,
-      )
-      if (trackIndex + 1 < this.RootStore.queueStore.queue.tracks.length) {
-        this.play(this.RootStore.queueStore.queue.tracks[trackIndex + 1])
+      if (this.RootStore.queueStore.queue.repeat) {
+        this.RootStore.queueStore.shuffleQueue.tracks.map(function(track) {
+          track.played = false
+          return track
+        })
+        this.play(this.RootStore.queueStore.shuffleQueue.tracks[0])
       } else {
-        if (!this.RootStore.queueStore.queue.repeat) {
-          if (auto) {
-            this.handlePlay(false)
-          }
-
-          this.RootStore.queueStore.queue.tracks.map(function(track) {
-            track.played = false
-            return track
-          })
+        if (auto) {
+          this.handlePlay(false)
         }
-
-        this.RootStore.progressStore.seekTo.number = 0
       }
     }
   }
 
   @action
-  handlePlayPrev(id) {
+  handlePlayPrev(trackId) {
     const trackIndex = this.RootStore.queueStore.queue.tracks.findIndex(
-      resp => resp.id === id,
+      resp => resp.trackId === trackId,
     )
     if (trackIndex - 1 >= 0) {
-      this.play(this.RootStore.queueStore.queue.tracks[trackIndex - 1])
+      this.play(this.RootStore.queueStore.shuffleQueue.tracks[trackIndex - 1])
     } else {
+      if (this.RootStore.queueStore.queue.repeat) {
+        this.play(
+          this.RootStore.queueStore.shuffleQueue.tracks[
+            this.RootStore.queueStore.shuffleQueue.tracks.length - 1
+          ],
+        )
+      }
     }
   }
+
+  // handlePlayPrev(id) {
+  //   const trackIndex = this.RootStore.queueStore.queue.tracks.findIndex(
+  //     resp => resp.id === id,
+  //   )
+  //   if (trackIndex - 1 >= 0) {
+  //     this.play(this.RootStore.queueStore.queue.tracks[trackIndex - 1])
+  //   } else {
+  //   }
+  // }
 
   @action
   handleRepeat() {
@@ -117,5 +122,13 @@ export default class PlayerStore {
   handleShuffle() {
     this.RootStore.queueStore.queue.shuffle = !this.RootStore.queueStore.queue
       .shuffle
+
+    if (this.RootStore.queueStore.queue.shuffle) {
+      this.RootStore.queueStore.shuffleQueue.tracks = shuffleArray(
+        this.RootStore.queueStore.queue.tracks,
+      )
+    } else {
+      this.RootStore.queueStore.shuffleQueue.tracks = this.RootStore.queueStore.queue.tracks
+    }
   }
 }

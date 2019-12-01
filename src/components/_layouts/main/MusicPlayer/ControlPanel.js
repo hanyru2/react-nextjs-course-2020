@@ -35,7 +35,7 @@ function ButtonControl({ icon, circle = false, active = false, onClick }) {
 
 function ControlPanel({ RootStore }) {
   const { playerStore, queueStore } = RootStore
-  const { id, playing } = playerStore.nowPlaying
+  const { trackId, playing } = playerStore.nowPlaying
   const { shuffle, repeat } = queueStore.queue
 
   return (
@@ -50,7 +50,7 @@ function ControlPanel({ RootStore }) {
       <Box>
         <ButtonControl
           icon="step-backward"
-          onClick={() => playerStore.handlePlayPrev(id)}
+          onClick={() => playerStore.handlePlayPrev(trackId)}
         />
       </Box>
       <Box>
@@ -63,7 +63,7 @@ function ControlPanel({ RootStore }) {
       <Box>
         <ButtonControl
           icon="step-forward"
-          onClick={() => playerStore.handlePlayNext(id, false)}
+          onClick={() => playerStore.handlePlayNext(trackId, false)}
         />
       </Box>
       <Box>

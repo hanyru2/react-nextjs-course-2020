@@ -7,7 +7,7 @@ export default inject()(Player)
 
 function Player({ RootStore }) {
   const { playerStore, volumeStore, progressStore } = RootStore
-  const { id, url, playing } = playerStore.nowPlaying
+  const { trackId, url, playing } = playerStore.nowPlaying
   const { muted, level } = volumeStore.musicVolume
   const { number } = progressStore.seekTo
 
@@ -26,7 +26,7 @@ function Player({ RootStore }) {
       volume={level}
       muted={muted}
       onProgress={data => progressStore.handleProgressBar(data)}
-      onEnded={() => playerStore.handlePlayNext(id, true)}
+      onEnded={() => playerStore.handlePlayNext(trackId, true)}
       ref={playerInst}
     />
   )

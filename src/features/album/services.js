@@ -21,6 +21,7 @@ export function getAlbumById(id, { token }) {
       ' Songs'
     const tracksItems = get(response, 'tracks.items', [])
     const tracks = tracksItems.map(resp => ({
+      trackId: Math.random(),
       id: resp.id,
       name: resp.name,
       duration: resp.duration_ms,

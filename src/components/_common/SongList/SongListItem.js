@@ -11,7 +11,7 @@ export default inject()(SongListItem)
 function SongListItem({ RootStore, track, inQueue }) {
   const { playerStore, queueStore } = RootStore
   const [hover, setHover] = useState(false)
-  const { id, playing } = playerStore.nowPlaying
+  const { trackId, playing } = playerStore.nowPlaying
 
   if (track.previewUrl === null) {
     return null
@@ -23,7 +23,7 @@ function SongListItem({ RootStore, track, inQueue }) {
       queueStore.handleAddToQueue(track)
     }
 
-    if (id === track.id && playing) {
+    if (trackId === track.trackId && playing) {
       playerStore.handlePlay(!playing)
     } else {
       playerStore.play(track)
@@ -57,7 +57,7 @@ function SongListItem({ RootStore, track, inQueue }) {
             onClick={() => checkInQueue(inQueue)}>
             <Icon
               icon={
-                id === track.id
+                trackId === track.trackId
                   ? playing
                     ? 'pause'
                     : 'play'

@@ -10,6 +10,7 @@ export function getPlaylistById(id, { token }) {
     const bottomLine = get(response, 'tracks.total', 0) + ' Tracks'
     const tracksItems = get(response, 'tracks.items', [])
     const tracks = tracksItems.map(resp => ({
+      trackId: Math.random(),
       id: resp.track.id,
       name: resp.track.name,
       duration: resp.track.duration_ms,

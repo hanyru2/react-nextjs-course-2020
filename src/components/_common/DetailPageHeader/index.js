@@ -8,15 +8,10 @@ import { inject } from '@lib/store'
 export default inject()(DetailPageHeader)
 
 function DetailPageHeader({ data, RootStore }) {
-  const { playerStore, queueStore } = RootStore
+  const { queueStore } = RootStore
   const { tracks } = data
   function playSongList() {
-    queueStore.handleClearQueue()
-    tracks.map(function(track) {
-      queueStore.handleAddToQueue(track)
-    })
-
-    playerStore.play(tracks[0])
+    queueStore.handleAddAllToQueue(tracks)
   }
   return (
     <Flex flexWrap="wrap" css={{ padding: '20px 70px' }}>

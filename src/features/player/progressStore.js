@@ -35,7 +35,11 @@ export default class ProgressStore {
   @action
   handleSeekMouseUp(value) {
     this.seekTo.status = false
-    this.seekTo.number = parseFloat(value)
+    if (value === '1') {
+      this.seekTo.number = 0.999999
+    } else {
+      this.seekTo.number = parseFloat(value)
+    }
   }
   @action
   handleSeekMouseDown() {

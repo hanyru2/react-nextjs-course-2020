@@ -23,7 +23,6 @@ export default class PlayerStore {
   @action
   play(track) {
     const { trackId, id, previewUrl, name, artist, image } = track
-
     const trackIndex = this.RootStore.queueStore.shuffleQueue.tracks.findIndex(
       resp => resp.trackId === trackId,
     )
@@ -47,6 +46,7 @@ export default class PlayerStore {
 
   @action
   handlePlayNext(trackId, auto = false) {
+    this.RootStore.progressStore.seekTo.number = 0
     if (this.RootStore.queueStore.shuffleQueue.tracks.length > 1) {
       const trackIndex = this.RootStore.queueStore.shuffleQueue.tracks.findIndex(
         resp => resp.trackId === trackId,
@@ -62,6 +62,11 @@ export default class PlayerStore {
             track.played = false
             return track
           })
+          if (this.RootStore.queueStore.queue.shuffle) {
+            this.RootStore.queueStore.shuffleQueue.tracks = shuffleArray(
+              this.RootStore.queueStore.shuffleQueue.tracks,
+            )
+          }
           this.play(this.RootStore.queueStore.shuffleQueue.tracks[0])
         } else {
           if (auto) {
@@ -102,16 +107,6 @@ export default class PlayerStore {
     }
   }
 
-  // handlePlayPrev(id) {
-  //   const trackIndex = this.RootStore.queueStore.queue.tracks.findIndex(
-  //     resp => resp.id === id,
-  //   )
-  //   if (trackIndex - 1 >= 0) {
-  //     this.play(this.RootStore.queueStore.queue.tracks[trackIndex - 1])
-  //   } else {
-  //   }
-  // }
-
   @action
   handleRepeat() {
     this.RootStore.queueStore.queue.repeat = !this.RootStore.queueStore.queue
@@ -123,12 +118,12 @@ export default class PlayerStore {
     this.RootStore.queueStore.queue.shuffle = !this.RootStore.queueStore.queue
       .shuffle
 
+    // this.RootStore.queueStore.shuffleQueue.tracks = this.RootStore.queueStore.queue.tracks
+
     if (this.RootStore.queueStore.queue.shuffle) {
       this.RootStore.queueStore.shuffleQueue.tracks = shuffleArray(
-        this.RootStore.queueStore.queue.tracks,
+        this.RootStore.queueStore.shuffleQueue.tracks,
       )
-    } else {
-      this.RootStore.queueStore.shuffleQueue.tracks = this.RootStore.queueStore.queue.tracks
     }
   }
 }

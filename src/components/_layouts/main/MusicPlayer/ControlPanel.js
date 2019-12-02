@@ -36,7 +36,7 @@ function ButtonControl({ icon, circle = false, active = false, onClick }) {
 function ControlPanel({ RootStore }) {
   const { playerStore, queueStore } = RootStore
   const { trackId, playing } = playerStore.nowPlaying
-  const { shuffle, repeat } = queueStore.queue
+  const { shuffle, repeat, tracks } = queueStore.queue
 
   return (
     <Flex>

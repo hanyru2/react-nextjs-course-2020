@@ -51,6 +51,9 @@ export default class QueueStore {
     track.played = false
     this.queue.tracks.push(track)
     this.shuffleQueue.tracks.push(track)
+
+    if (this.shuffleQueue.tracks.length > 1 && this.queue.shuffle) {
+    }
   }
 
   @action
